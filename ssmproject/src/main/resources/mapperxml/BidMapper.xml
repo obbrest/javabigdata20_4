@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.BidMapper">
+    <resultMap id="BaseResultMap" type="com.domain.Bid">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="projectbiddingid" jdbcType="INTEGER" property="projectbiddingid"/>
+        <result column="supplierid" jdbcType="INTEGER" property="supplierid"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="bz" jdbcType="VARCHAR" property="bz"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, projectbiddingid, supplierid, money, bz
+    </sql>
+
+
+    <resultMap id="selectBidAndBidfileAllMap" type="com.domain.Bid">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="projectbiddingid" jdbcType="INTEGER" property="projectbiddingid"/>
+        <result column="supplierid" jdbcType="INTEGER" property="supplierid"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="bz" jdbcType="VARCHAR" property="bz"/>
+        <collection property="bidfileList" ofType="com.domain.Bidfile" javaType="list">
+            <id property="id" column="bid"></id>
+            <result property="filepath" column="filepath"></result>
+        </collection>
+    </resultMap>
+
+    <select id="selectBidAndBidfileAll" resultMap="selectBidAndBidfileAllMap">
+        SELECT a.`id`,a.`projectbiddingid`,a.`supplierid`,a.`money`,a.`bz`,b.`id` bid,b.`filepath`
+        FROM bid a
+        INNER JOIN bidfile b ON a.`id` = b.`bidid`
+        WHERE a.`projectbiddingid` = #{bid.projectbiddingid}
+
+    </select>
+
+    <resultMap id="selectByProjectbiddingidMap" type="com.domain.Bid">
+        <id property="id" column="aid"></id>
+        <result property="projectbiddingid" column="projectbiddingid"></result>
+        <result property="money" column="money"></result>
+        <result property="bz" column="bz"></result>
+        <result property="supplierid" column="supplierid"></result>
+        <association property="supplier" javaType="com.domain.Supplier">
+            <id property="id" column="bid"></id>
+            <result property="uname" column="uname"></result>
+            <result property="pwd" column="pwd"></result>
+            <result property="suppliername" column="suppliername"></result>
+            <result property="tel" column="tel"></result>
+            <result property="address" column="address"></result>
+            <result property="money" column="money2"></result>
+            <result property="sign" column="sign"></result>
+            <result property="bz" column="bz"></result>
+        </association>
+        <collection property="bidfileList" javaType="list" ofType="com.domain.Bidfile">
+            <id property="id" column="cid"></id>
+            <result property="filepath" column="filepath"></result>
+            <result property="bidid" column="bidid"></result>
+        </collection>
+    </resultMap>
+    <select id="selectByProjectbiddingid" resultMap="selectByProjectbiddingidMap">
+        SELECT a.id aid,
+               a.projectbiddingid,
+               a.money,
+               a.bz,
+               b.id bid,
+               b.uname,
+               b.pwd,
+               b.suppliername,
+               b.tel,
+               b.address,
+               b.money money2,
+               b.sign,
+               b.bz,
+               c.id cid,
+               c.filepath
+        FROM bid a
+                 INNER JOIN supplier b ON a.supplierid = b.`id`
+                 INNER JOIN bidfile c ON c.`bidid` = a.id
+        WHERE a.projectbiddingid = #{projectbiddingid}
+
+    </select>
+
+</mapper>

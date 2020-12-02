@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.ProjectbiddingMapper">
+    <resultMap id="BaseResultMap" type="com.domain.Projectbidding">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="owner" jdbcType="INTEGER" property="owner"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="body" jdbcType="VARCHAR" property="body"/>
+        <result column="releasetime" jdbcType="VARCHAR" property="releasetime"/>
+        <result column="endtime" jdbcType="VARCHAR" property="endtime"/>
+        <result column="ontime" jdbcType="VARCHAR" property="ontime"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="bz" jdbcType="VARCHAR" property="bz"/>
+        <result column="bigwinner" jdbcType="INTEGER" property="bigwinner"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, `owner`, title, body, releasetime, endtime, ontime, money, bz, bigwinner
+    </sql>
+
+    <resultMap id="selectAll2Map" type="com.domain.Projectbidding">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="owner" jdbcType="INTEGER" property="owner"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="body" jdbcType="VARCHAR" property="body"/>
+        <result column="releasetime" jdbcType="VARCHAR" property="releasetime"/>
+        <result column="endtime" jdbcType="VARCHAR" property="endtime"/>
+        <result column="ontime" jdbcType="VARCHAR" property="ontime"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="bz" jdbcType="VARCHAR" property="bz"/>
+        <result column="bigwinner" jdbcType="INTEGER" property="bigwinner"/>
+        <collection property="projectbiddingfileList" javaType="list" ofType="com.domain.Projectbiddingfile">
+            <id property="id" column="bid"></id>
+            <result property="filepath" column="filepath"></result>
+        </collection>
+    </resultMap>
+    <select id="selectAll2" resultMap="selectAll2Map">
+        SELECT a.id , a.`owner`, a.title, a.body, a.releasetime, a.endtime, a.ontime, a.money, a.bz,
+        a.bigwinner,b.`filepath`,b.`id` bid FROM projectbidding a INNER JOIN projectbiddingfile b ON
+        a.`id`=b.`projectbiddingid`
+        <where>
+            <if test="projectbidding.owner!= null and projectbidding.owner!=''">
+                a.`owner`=#{projectbidding.owner}
+            </if>
+            <if test="projectbidding.bz!=null and projectbidding.bz!=''">
+               AND a.`bz`=#{projectbidding.bz}
+            </if>
+            <if test="projectbidding.id!=null and projectbidding.id!=''">
+                AND a.`id`=#{projectbidding.id}
+            </if>
+        </where>
+    </select>
+    <select id="selectAll3" resultMap="selectAll2Map">
+        SELECT * FROM projectbidding WHERE bz=#{projectbidding.bz} AND ontime &lt;=NOW()
+    </select>
+
+
+</mapper>

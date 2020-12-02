@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.SupplierMapper">
+    <resultMap id="BaseResultMap" type="com.domain.Supplier">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="suppliername" jdbcType="VARCHAR" property="suppliername"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="sign" jdbcType="INTEGER" property="sign"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, suppliername, tel, address, money, sign
+    </sql>
+    <select id="selectWhere" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from ssmproject.supplier
+        <where>
+            <if test="supplier.id!=null">id=#{supplier.id}</if>
+            <if test="supplier.suppliername!=null">and suppliername like concat('%',#{supplier.suppliername},'%')</if>
+            <if test="supplier.tel!=null">and tel = #{supplier.tel}</if>
+            <if test="supplier.address!=null">and address like concat('%',#{supplier.address},'%')</if>
+            <if test="supplier.money!=null">and money &lt;= #{supplier.money}</if>
+            <if test="supplier.sign!=null">and sign = #{supplier.sign}</if>
+        </where>
+    </select>
+
+    <resultMap id="selectSupplierQualificationsMap" type="com.domain.Supplier">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="suppliername" jdbcType="VARCHAR" property="suppliername"/>
+        <result column="tel" jdbcType="VARCHAR" property="tel"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="money" jdbcType="INTEGER" property="money"/>
+        <result column="sign" jdbcType="INTEGER" property="sign"/>
+        <collection property="qualificationsList" ofType="com.domain.Qualifications" javaType="list">
+            <id column="bid" jdbcType="INTEGER" property="id" />
+            <result column="supplierid" jdbcType="INTEGER" property="supplierid" />
+            <result column="imgpath" jdbcType="VARCHAR" property="imgpath" />
+        </collection>
+    </resultMap>
+    <select id="selectSupplierQualifications" resultMap="selectSupplierQualificationsMap">
+        SELECT a.id, a.suppliername, a.tel, a.address, a.money, a.sign,b.`id` bid,b.`imgpath` FROM supplier a LEFT JOIN qualifications b ON a.`id`=b.`supplierid` WHERE a.`id`= #{supplier.id}
+    </select>
+
+</mapper>
